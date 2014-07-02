@@ -6,7 +6,7 @@ from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship, backref
 
 
-engine = create_engine("sqlite:///ratings.db", echo=False)
+engine = create_engine("sqlite:///ratings.db", echo=True)
 session = scoped_session(sessionmaker(bind=engine,
                                     autocommit = False,
                                     autoflush = False))
@@ -14,7 +14,6 @@ session = scoped_session(sessionmaker(bind=engine,
 Base = declarative_base()
 Base.query = session.query_property()
 
-### Class declarations go here
 class User(Base):
     __tablename__ = "users"
 
@@ -41,8 +40,6 @@ class Movie(Base):
     title = Column(String(64))
     release_date = Column(DateTime)
     url = Column(String(64))
-
-### End class declarations
 
 def main():
     """In case we need this for something"""
