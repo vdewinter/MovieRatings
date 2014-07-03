@@ -43,7 +43,6 @@ def process_login():
     if user:
         """setting session to user id"""
         b_session["user"] = user[0].id
-        print b_session
         flash("Login successful. Welcome back!")
         return redirect("/personal_ratings")
     else:
@@ -62,7 +61,17 @@ def show_all_users():
 
 @app.route("/personal_ratings", methods=["GET"])
 def show_personalratings():
-    return render_template("personal_ratings.html")
+    logged_in_user_id = b_session["user"]
+    user_ratings = model.session.query(model.Rating).filter_by(user_id=logged_in_user_id)
+    return render_template("personal_ratings.html", user_ratings=user_ratings)
+
+# @app.route("/movie_record_%s" % movie.id, methods=["GET"])
+# def show_movie_record():
+#     pass
+
+# @app.route("/movie_record_%s" % movie.id, methods=['POST'])
+# def update_movie_record():
+#     pass
     
 
 if __name__ == "__main__":

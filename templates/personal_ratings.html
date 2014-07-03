@@ -1,4 +1,49 @@
 {% extends 'base.html' %}
 {% block body %}
-    <h2>Add personal ratings</h2>
+    <h2>Personal Ratings</h2>
+<!--     <a href="#" class="google">Google</a> -->
+    {% for user_rating in user_ratings %}
+        <div class="movie">{{user_rating.movie.title}}, {{user_rating.rating}} 
+            <div class="stars" data-movie="{{user_rating.movie.id}}" data-rating="{{user_rating.movie.rating}}">
+                <input type="radio" name="star_{{user_rating.movie.id}}" class="starclick 1"
+                {% if user_rating.movie.rating == 1 %}
+                    checked="checked"
+                {% endif %}
+                />
+                <input type="radio" name="star_{{user_rating.movie.id}}" class="starclick 2"/>
+                <input type="radio" name="star_{{user_rating.movie.id}}" class="starclick 3"/>
+                <input type="radio" name="star_{{user_rating.movie.id}}" class="starclick 4"/>
+                <input type="radio" name="star_{{user_rating.movie.id}}" class="starclick 5"/>
+            </div><br />
+        </div>
+    {% endfor %}
+
+<script type="text/javascript">
+
+function click_a_star(event, obj)
+{
+    movie_id = obj.parent().attr('data-movie');
+    console.log("Movie ID: "+movie_id);
+    var data = {
+        "movie_id": movie_id,
+        "rating": 3
+    };
+    $.ajax("/set_rating",data,function(response){
+        console.log("Rating has been set!");
+    });
+}
+
+$(document).ready(function(){
+
+    $('.starclick').click(function(event){
+        click_a_star(event, $(this));
+    });
+
+    // $(".google").click(function(event){
+    //     event.preventDefault();
+
+    //     alert("i aint goin nowhere!");
+    // });
+});
+</script>
 {% endblock %}

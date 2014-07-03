@@ -28,10 +28,11 @@ class Rating(Base):
 
     id = Column(Integer, primary_key = True)
     user_id = Column(Integer, ForeignKey('users.id'))
-    movie_id = Column(Integer)
+    movie_id = Column(Integer, ForeignKey('movies.id'))
     rating = Column(Integer)
     # timestamp = Column(Integer)
     user = relationship("User", backref=backref("ratings", order_by=id))
+    movie = relationship("Movie", backref=backref("ratings", order_by=id))
 
 class Movie(Base):
     __tablename__ = "movies"
