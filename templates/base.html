@@ -1,7 +1,7 @@
 <html>
     <head>
         <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" />
-        <!-- <link rel="stylesheet" href="/static/css/style.css" /> -->
+        <link rel="stylesheet" href="/static/css/style.css" />
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     </head>
     <body>
@@ -12,11 +12,12 @@
                 </div>
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav navbar-right">
-                       
+                        
                         {% if "user" in session %}
                             <li><a href="/logout">Log Out</a></li>
                         {% else %}
                             <li><a href="/login">Log In</a></li>
+                            <li><a href="/signup">Sign Up</a></li>
                         {% endif %}
                     </ul>
                 </div>
@@ -26,8 +27,8 @@
             {% with messages = get_flashed_messages() %}
             {% if messages %}
             {% for message in messages %}
-            <ul class="flashes">
-                <li class="alert alert-warning" role="alert">{{message}}</li>
+            <ul class="list-group flashes">
+                <li class="alert alert-warning list-group-item" role="alert">{{message}}</li>
             </ul>
             {% endfor %}
             {% endif %}

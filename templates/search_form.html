@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block body %}
+<h1>So, what movies have you seen?</h1>
+<form class="form-signin" method="POST">
+    <input type="input" name="search-phrase" class="form-control" placeholder="Enter movie title" required autofocus />
+    <button type="btn btn-lg btn-primary btn-block" type="submit">Search</button>
+</form>
+{% endblock %}

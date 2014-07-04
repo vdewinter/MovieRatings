@@ -1,49 +1,66 @@
 {% extends 'base.html' %}
 {% block body %}
     <h2>Personal Ratings</h2>
-<!--     <a href="#" class="google">Google</a> -->
     {% for user_rating in user_ratings %}
-        <div class="movie">{{user_rating.movie.title}}, {{user_rating.rating}} 
-            <div class="stars" data-movie="{{user_rating.movie.id}}" data-rating="{{user_rating.movie.rating}}">
-                <input type="radio" name="star_{{user_rating.movie.id}}" class="starclick 1"
-                {% if user_rating.movie.rating == 1 %}
+        <div class="movie">{{user_rating.movie.title}} 
+            <div class="stars" data-movie="{{user_rating.movie.id}}" data-id="{{user_rating.id}}">
+                <input type="radio" name="star_{{user_rating.movie.id}}" data-rating="1" class="starclick 1"
+                {% if user_rating.rating == 1 %}
                     checked="checked"
                 {% endif %}
                 />
-                <input type="radio" name="star_{{user_rating.movie.id}}" class="starclick 2"/>
-                <input type="radio" name="star_{{user_rating.movie.id}}" class="starclick 3"/>
-                <input type="radio" name="star_{{user_rating.movie.id}}" class="starclick 4"/>
-                <input type="radio" name="star_{{user_rating.movie.id}}" class="starclick 5"/>
+                <input type="radio" name="star_{{user_rating.movie.id}}" data-rating="2" class="starclick 2"
+                {% if user_rating.rating == 2 %}
+                    checked="checked"
+                {% endif %}
+                />
+                <input type="radio" name="star_{{user_rating.movie.id}}" data-rating="3" class="starclick 3"
+                {% if user_rating.rating == 3 %}
+                    checked="checked"
+                {% endif %}
+                />
+                <input type="radio" name="star_{{user_rating.movie.id}}" data-rating="4" class="starclick 4"
+                {% if user_rating.rating == 4 %}
+                    checked="checked"
+                {% endif %}
+                />
+                <input type="radio" name="star_{{user_rating.movie.id}}" data-rating="5" class="starclick 5"
+                {% if user_rating.rating == 5 %}
+                    checked="checked"
+                {% endif %}
+                />
             </div><br />
         </div>
     {% endfor %}
 
 <script type="text/javascript">
 
-function click_a_star(event, obj)
-{
+function click_a_star(event, obj){
     movie_id = obj.parent().attr('data-movie');
-    console.log("Movie ID: "+movie_id);
+    rating = obj.attr('data-rating');
+    rating_id = obj.parent().attr('data-id');
+
     var data = {
+        "rating_id": rating_id,
         "movie_id": movie_id,
-        "rating": 3
+        "rating": rating
     };
-    $.ajax("/set_rating",data,function(response){
-        console.log("Rating has been set!");
+    
+    $.ajax({
+        url: "/set_rating",
+        data: data,
+        type : "POST"
+    }).done(function(response){
+        console.log(response);
     });
 }
 
 $(document).ready(function(){
 
+
     $('.starclick').click(function(event){
         click_a_star(event, $(this));
     });
-
-    // $(".google").click(function(event){
-    //     event.preventDefault();
-
-    //     alert("i aint goin nowhere!");
-    // });
 });
 </script>
 {% endblock %}

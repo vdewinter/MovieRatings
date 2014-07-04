@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block body %}
+<h1>Results</h1>
+{% for result in search_results %}
+    <a href="#" class="selected_movie">{{result.title}}</a><br />
+    <div class="rate_movie">
+        <div class="stars" data-movie="{{result.id}}">
+            <input type="radio" name="star" data-rating="1" class="starclick 1"/>
+            <input type="radio" name="star" data-rating="2" class="starclick 2"/>
+            <input type="radio" name="star" data-rating="3" class="starclick 3"/>
+            <input type="radio" name="star" data-rating="4" class="starclick 4"/>
+            <input type="radio" name="star" data-rating="5" class="starclick 5"/>
+        </div><br />
+    </div>
+{% endfor %}
+
+<script type="text/javascript">
+
+function click_a_star(event, obj){
+    movie_id = obj.parent().attr('data-movie');
+    rating = obj.attr('data-rating');
+
+    var data = {
+        "movie_id": movie_id,
+        "rating": rating,
+        "user_id": {{ user_id }}
+    };
+
+    $.ajax({
+        url: "/set_rating",
+        data: data,
+        type : "POST"
+    }).done(function(response){
+        console.log("success")
+    });
+}
+
+$(document).ready(function(){
+    $('.selected_movie').click(function(event){
+        $(".rate_movie").show();
+    })
+
+    $('.starclick').click(function(event){
+       click_a_star(event, $(this));
+    });
+});
+
+</script>
+
+{% endblock %}

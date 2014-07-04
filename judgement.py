@@ -7,7 +7,6 @@ app.secret_key = '\xf5!\x07!qj\xa4\x08\xc6\xf8\n\x8a\x95m\xe2\x04g\xbb\x98|U\xa2
 @app.route("/")
 def index():
     return render_template("index.html")
-    
 
 @app.route("/signup", methods=["GET"])
 def show_signup():
@@ -19,7 +18,7 @@ def process_signup():
     form_password = request.form['password']
     form_age = request.form['age']
     form_zipcode = request.form['zipcode']
-    print form_email, form_password, form_age, form_zipcode
+
     new_user = model.User(
         email = form_email,
         password = form_password,
@@ -44,7 +43,7 @@ def process_login():
         """setting session to user id"""
         b_session["user"] = user[0].id
         flash("Login successful. Welcome back!")
-        return redirect("/personal_ratings")
+        return redirect("/")
     else:
         flash("No such email in our user database. Please re-enter.")
         return redirect("/login")
@@ -56,22 +55,46 @@ def logout():
 
 @app.route("/all_users")
 def show_all_users():
-    user_list = model.session.query(model.User).limit(5).all()
+    user_list = model.session.query(model.User).all()
     return render_template("user_list.html", user_list=user_list)
 
 @app.route("/personal_ratings", methods=["GET"])
 def show_personalratings():
     logged_in_user_id = b_session["user"]
     user_ratings = model.session.query(model.Rating).filter_by(user_id=logged_in_user_id)
+
     return render_template("personal_ratings.html", user_ratings=user_ratings)
 
-# @app.route("/movie_record_%s" % movie.id, methods=["GET"])
-# def show_movie_record():
-#     pass
+@app.route("/new_rating", methods=["GET"])
+def search_movies():
+    return render_template("search_form.html")
 
-# @app.route("/movie_record_%s" % movie.id, methods=['POST'])
-# def update_movie_record():
-#     pass
+@app.route("/new_rating", methods=["POST"])
+def new_rating():
+    form_search_phrase = "%" + request.form["search-phrase"] + "%"
+    search_results = model.session.query(model.Movie).filter(model.Movie.title.like(form_search_phrase)).all()
+    if search_results:
+        return render_template("search_results.html", search_results=search_results, user_id = b_session['user'])
+    else:
+        flash("Sorry, no movies in our database match your search.")
+        return redirect("/new_rating")
+    
+
+@app.route("/set_rating", methods=["POST"])
+def set_rating():
+    form_rating = request.form["rating"]
+    form_movie_id = request.form["movie_id"]
+    user_id = b_session["user"]
+    
+    rating = model.session.query(model.Rating).filter(model.Rating.movie_id == form_movie_id, model.Rating.user_id == user_id).first()
+
+    if not rating:
+        rating = model.Rating(movie_id=form_movie_id, user_id=user_id)
+        model.session.add(rating)
+    rating.rating = form_rating
+    model.session.commit()
+
+    return "success"
     
 
 if __name__ == "__main__":
