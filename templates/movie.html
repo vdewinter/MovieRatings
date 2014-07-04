@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block body %}
+
+<h2>{{movie.title}}</h2>
+<p>Release Date: {{movie.release_date}}</p>
+<p>Average Rating: {{average}}</p>
+
+{% if prediction %}
+    <h3>We predict that you will rate this movie {{prediction}}.</h3>
+{% endif %}
+
+{% endblock %}

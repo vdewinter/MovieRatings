@@ -103,5 +103,31 @@ def set_rating():
 
     return "success"
 
+@app.route("/movie/<int:id>", methods = ["GET"])
+def view_movie(id):
+    movie = model.session.query(model.Movie).get(id)
+    ratings = movie.ratings
+
+    rating_nums = []
+    user_rating = None
+
+    for r in ratings:
+        if r.user_id == b_session['user']:
+            user_rating = r
+        rating_nums.append(r.rating)
+    avg_rating = float(sum(rating_nums))/len(rating_nums)
+
+    # only predict if a user has not rated the movie
+    user = model.session.query(model.User).get(b_session['user'])
+    prediction = None
+
+    if not user_rating:
+        prediction = user.predict_rating(movie)
+
+    return render_template("movie.html", movie = movie, average = avg_rating,\
+        user_rating = user_rating, prediction = prediction)
+
+
+
 if __name__ == "__main__":
     app.run(debug=True)
