@@ -30,7 +30,7 @@ class Rating(Base):
     user_id = Column(Integer, ForeignKey('users.id'))
     movie_id = Column(Integer, ForeignKey('movies.id'))
     rating = Column(Integer)
-    # timestamp = Column(Integer)
+
     user = relationship("User", backref=backref("ratings", order_by=id))
     movie = relationship("Movie", backref=backref("ratings", order_by=id))
 
@@ -43,7 +43,6 @@ class Movie(Base):
     url = Column(String(64))
 
 def main():
-    """In case we need this for something"""
     pass
 
 if __name__ == "__main__":

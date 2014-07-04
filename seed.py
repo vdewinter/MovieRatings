@@ -1,9 +1,6 @@
-import model
-import csv
-import datetime
+import model, csv, datetime
 
 def load_users(session):
-    # use u.user
     with open('./seed_data/u.user', 'rb') as csvfile:
         user_rows = csv.reader(csvfile, delimiter="|")
         for user in user_rows:
@@ -18,7 +15,6 @@ def load_users(session):
 
 
 def load_movies(session):
-    # use u.item
     with open('./seed_data/u.item', 'rb') as csvfile:
         movie_rows = csv.reader(csvfile, delimiter="|")
         for movie in movie_rows:
@@ -36,7 +32,6 @@ def load_movies(session):
         session.commit()
 
 def load_ratings(session):
-    # use u.data
     with open('./seed_data/u.data', 'rb') as csvfile:
         ratings_rows = csv.reader(csvfile, delimiter="\t")
         for rating_row in ratings_rows:
@@ -50,11 +45,10 @@ def load_ratings(session):
         session.commit()
 
 def main(session):
-    # You'll call each of the load_* functions with the session as an argument
-    # load_users(session)
+    load_users(session)
     load_movies(session)
-    # load_ratings(session)
+    load_ratings(session)
 
 if __name__ == "__main__":
-    s= model.connect()
+    s = model.connect()
     main(s)
