@@ -27,8 +27,11 @@ def signup():
             )
         model.session.add(new_user)
         model.session.commit()
-        
-        return redirect("/personal_ratings")
+        b_session['user'] = new_user.id # is this working?
+        print b_session['user']
+        flash("Sign up successful")
+
+        return redirect("/")
 
 @app.route("/login", methods=["GET", "POST"])
 def show_login():
@@ -62,7 +65,7 @@ def show_personal_ratings():
         logged_in_user_id = b_session["user"]
         user_ratings = model.session.query(model.Rating).filter_by(user_id=logged_in_user_id)
     else:
-        return("Please log in or sign up to search for and rate movies.")
+        return render_template("access.html")
         
     return render_template("personal_ratings.html", user_ratings=user_ratings)
 
@@ -77,12 +80,12 @@ def search_movies():
             search_results = model.session.query(model.Movie).filter(model.Movie.title.like(form_search_phrase)).all()
 
             if search_results:
-                return render_template("search_results.html", search_results=search_results, user_id = b_session['user'])
+                return render_template("search_results.html", search_results=search_results)
             else:
                 flash("Sorry, no movies in our database match your search.")
                 return redirect("/search_movies")
     else:
-        return("Please log in or sign up to search for and rate movies.")
+        return render_template("access.html")
 
 @app.route("/set_rating", methods=["POST"])
 def set_rating():
@@ -107,7 +110,6 @@ def set_rating():
 def view_movie(id):
     movie = model.session.query(model.Movie).get(id)
     ratings = movie.ratings
-
     rating_nums = []
     user_rating = None
 
@@ -116,18 +118,18 @@ def view_movie(id):
             user_rating = r
         rating_nums.append(r.rating)
     avg_rating = float(sum(rating_nums))/len(rating_nums)
-
+    
     # only predict if a user has not rated the movie
     user = model.session.query(model.User).get(b_session['user'])
-    prediction = None
-
-    if not user_rating:
+    
+    if user_rating is None:
         prediction = user.predict_rating(movie)
+        print "Prediction is ", prediction
+    else:
+        prediction = None
 
     return render_template("movie.html", movie = movie, average = avg_rating,\
-        user_rating = user_rating, prediction = prediction)
-
-
-
+        user_rating = user_rating, prediction = prediction, user_id = b_session['user'])
+    
 if __name__ == "__main__":
     app.run(debug=True)

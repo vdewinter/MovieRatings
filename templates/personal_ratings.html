@@ -1,8 +1,9 @@
 {% extends 'base.html' %}
 {% block body %}
+
     <h2>Personal Ratings</h2>
     {% for user_rating in user_ratings %}
-        <div class="movie">{{user_rating.movie.title}} 
+        <div class="movie"><a href="/movie/{{user_rating.movie.id}}">{{user_rating.movie.title}}</a> 
             <div class="stars" data-movie="{{user_rating.movie.id}}" data-id="{{user_rating.id}}">
                 <input type="radio" name="star_{{user_rating.movie.id}}" data-rating="1" class="starclick 1"
                 {% if user_rating.rating == 1 %}
